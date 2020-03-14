@@ -1,4 +1,4 @@
-name: docs
+name: Update Docs
 
 on:
   push:
@@ -12,8 +12,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - run: npm ci && npm run docs:build
+
+      - name: Install VuePress
+        uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: --cwd docs add -D vuepress
+
+      - name: Print yarn bin
+        run: echo "$(ls $(yarn bin) | xargs)"
         working-directory: ./docs
+
+      - name: Build
+        run: $(yarn bin)/vuepress build
+        working-directory: ./docs
+
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v2
         env:
